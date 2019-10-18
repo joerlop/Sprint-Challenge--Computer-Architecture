@@ -22,8 +22,10 @@ class CPU:
         self.CALL = 0b01010000
         self.ADD = 0b10100000
         self.RET = 0b00010001
+        self.CMP = 0b10100111
 
         self.SPL = 7  # Stack Pointer location in the register
+        self.FL = 6
 
         self.branchtable = {}
         self.branchtable[self.HLT] = self.handle_hlt
@@ -35,6 +37,7 @@ class CPU:
         self.branchtable[self.CALL] = self.handle_call
         self.branchtable[self.RET] = self.handle_ret
         self.branchtable[self.ADD] = self.handle_add
+        self.branchtable[self.CMP] = self.handle_cmp
 
     def load(self):
         """Load a program into memory."""
@@ -174,3 +177,16 @@ class CPU:
 
         self.pc += 3
 
+    def handle_cmp(self):
+        reg_a = self.ram_read(self.pc + 1)
+        reg_b = self.ram_read(self.pc + 2)
+
+        val_a = self.register[reg_a]
+        val_b = self.register[reg_b]
+
+        if val_a == val_b:
+            self.register[self.FL] = 0b00000001
+        elif val_a < val_b:
+            self.register[self.FL] = 0b00000100
+        else:
+            self.register[self.FL] = 0b00000010
