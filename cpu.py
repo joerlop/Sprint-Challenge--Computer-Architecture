@@ -204,12 +204,16 @@ class CPU:
         self.pc = self.register[reg]
 
     def handle_jeq(self):
-        if self.register[self.FL][-1] == 1:
+        if self.register[self.FL] == 0b00000001:
             reg = self.ram_read(self.pc + 1)
             self.pc = self.register[reg]
+        else:
+            self.pc += 2
 
     def handle_jne(self):
-        if self.register[self.FL][-1] == 0:
+        if self.register[self.FL] != 0b00000001:
             reg = self.ram_read(self.pc + 1)
             self.pc = self.register[reg]
+        else:
+            self.pc += 2
 
