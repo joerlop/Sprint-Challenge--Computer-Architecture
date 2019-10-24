@@ -26,6 +26,7 @@ class CPU:
         self.JMP = 0b01010100
         self.JEQ = 0b01010101
         self.JNE = 0b01010110
+        self.PRA = 0b01001000
 
         self.SPL = 7  # Stack Pointer location in the register
         self.FL = 6
@@ -44,6 +45,7 @@ class CPU:
         self.branchtable[self.JMP] = self.handle_jmp
         self.branchtable[self.JEQ] = self.handle_jeq
         self.branchtable[self.JNE] = self.handle_jne
+        self.branchtable[self.PRA] = self.handle_pra
 
     def load(self):
         """Load a program into memory."""
@@ -61,6 +63,7 @@ class CPU:
                         new_line = int(line[:8], 2)
                         program.append(new_line)
 
+            print(f"program: {program}")
             address = 0
             for instruction in program:
                 self.ram[address] = instruction
@@ -216,4 +219,9 @@ class CPU:
             self.pc = self.register[reg]
         else:
             self.pc += 2
-
+    
+    def handle_pra(self):
+        reg = self.ram_read(self.pc + 1)
+        val = self.register[reg]
+        print(str(chr(val)))
+        self.pc += 2
